@@ -1,0 +1,13 @@
+
+
+[contenteditable="true"] {
+
+    background-color: white;
+    background-color: -moz-field;
+    border: 1px solid darkgray;
+    font: -moz-field;
+    font: -webkit-small-control;
+    margin-top: 5px;
+    padding: 2px 3px;
+    width: 398px;
+}

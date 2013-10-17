@@ -32,7 +32,7 @@
           <a class="navbar-brand" href="#">Storypull</a>
         </div>
         <div class="navbar-right">
-            
+
             <p id="session-status" class="navbar-text">
                 <i class="icon-twitter-sign"></i> Ohai, <span id="current-user"></span>
             </p>
@@ -44,10 +44,30 @@
    </div>
    <div class="container">
 
-        <article data-bind="template: { name: 'graf-template', foreach: grafs }"></article>
+        <article data-bind="template: { name: templateToUse, foreach: grafs }"></article>
+
+
+        <script id="details" type="text/html">
+            <div>
+                <h3 data-bind="text: text"></h3>
+                <p>Credits: <span data-bind="text: author"></span></p>
+                <button data-bind="click: $parent.selectedItem">Edit</button>
+            </div>
+        </script>
+
+        <script id="edit" type="text/html">
+            <div>
+                <form data-bind="submit: doSomething">
+                    <input type="text" name="input" data-bind="value: text">
+                    <input type="text" name="input" data-bind="value: author">
+                    <button data-bind="click: $parent.selectedItem" type="submit">Submit</button>
+                </form>
+            </div>
+        </script>
 
 
         <script type="text/html" id="graf-template">
+
         grafs
             <h3 data-bind="text: text"></h3>
             <p>Credits: <span data-bind="text: author"></span></p>
@@ -65,13 +85,20 @@
     <script src="vendor/knockout/build/knockout-raw.js"></script>
 
     <script type="text/javascript">
+        var viewModel = {};
+        viewModel.selectedView = ko.observable("details");
+        viewModel.selectedItem = ko.observable();
+        viewModel.templateToUse = function(item) {
+            return item === this.selectedItem() ? 'edit' : this.selectedView();
+        }.bind(viewModel);
+
+
         // bind data to model
         $.getJSON( "/api/stories/story-of-my-life", function( data ) {
 
-            function MyViewModel() {
-                 this.grafs = data.grafs;
-            }
-            ko.applyBindings(new MyViewModel());
+            viewModel.grafs = data.grafs;
+
+            ko.applyBindings(viewModel);
 
         });
     </script>
