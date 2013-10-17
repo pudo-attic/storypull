@@ -156,7 +156,7 @@ app.post('/api/stories/:slug/graf', function(req, res) {
         var graf = req.body;
 
         if (!story) {
-                res.status(404).jsonp({'status': 'No such story'});
+            res.status(404).jsonp({'status': 'No such story'});
         }
 
         if (!req.user) {
@@ -171,9 +171,19 @@ app.post('/api/stories/:slug/graf', function(req, res) {
         graf.author = req.user.screen_name;
         graf.approved = (story.author === req.user.screen_name);
         graf.created_at = new Date();
-        graf.key = graf.key || makeUUID();
 
-        // todo: generate and update sequence
+        if (!graf.key && !graf.sequence) {
+            var max = 0;
+            // todo: generate and update sequence - implement shifting.
+            story.grafs.forEach(function(g) {
+                if (g.sequence > max) {
+                    max = g.sequence;
+                }
+            });
+            graf.sequence = max + 1;
+        }
+
+        graf.key = graf.key || makeUUID();
 
         db.stories.update({'slug': story.slug}, {'$set': {'last_change': graf.created_at}},
             {}, function(err, docs) {});
@@ -183,7 +193,7 @@ app.post('/api/stories/:slug/graf', function(req, res) {
                 res.jsonp(docs);
             });
         });
-        
+
     }, function(err) {
         res.status(404).jsonp(err);
     });
