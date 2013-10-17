@@ -24,7 +24,7 @@ function makeUri(req, path) {
 }
 
 function makeUUID() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    return 'xxxxxxxxxxxx'.replace(/[x]/g, function(c) {
         var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
         return v.toString(16);
     });
@@ -46,7 +46,7 @@ function getStory(req, slug, callback, errCallback) {
                     return errCallback(err);
                 }
                 story.grafs = results;
-                return callback(story);
+                return callback(story, db);
             });
         });
     });
@@ -152,8 +152,12 @@ app.get('/api/stories/:slug', function(req, res) {
 });
 
 app.post('/api/stories/:slug/graf', function(req, res) {
-    dbPromise.done(function(db) {
+    getStory(req, req.params.slug, function(story, db) {
         var graf = req.body;
+
+        if (!story) {
+                res.status(404).jsonp({'status': 'No such story'});
+        }
 
         if (!req.user) {
             res.status(401).jsonp({'status': 'Not logged in'});
@@ -163,27 +167,25 @@ app.post('/api/stories/:slug/graf', function(req, res) {
             res.status(400).jsonp({'status': 'No text'});
         }
 
-        db.stories.findOne({'slug': req.params.slug}, function(err, story) {
-            if (!story) {
-                res.status(404).jsonp({'status': 'No such story'});
-            }
-            graf.latest = true;
-            graf.author = req.user.screen_name;
-            graf.approved = (story.author === req.user.screen_name);
-            graf.created_at = new Date();
-            graf.key = graf.key || makeUUID();
+        graf.latest = true;
+        graf.author = req.user.screen_name;
+        graf.approved = (story.author === req.user.screen_name);
+        graf.created_at = new Date();
+        graf.key = graf.key || makeUUID();
 
-            // todo: generate and update sequence
+        // todo: generate and update sequence
 
-            db.stories.update({'slug': story.slug}, {'$set': {'last_change': graf.created_at}},
-                {}, function(err, docs) {});
-            var query = graf.approved ? {'$set': {'latest': false}} : {'$set': {'current': false, 'latest': false}};
-            db.grafs.update({'slug': story.slug, 'key': graf.key}, query, {}, function(err, docs) {
-                db.grafs.insert(graf, function(err, docs) {
-                    res.jsonp(docs);
-                });
+        db.stories.update({'slug': story.slug}, {'$set': {'last_change': graf.created_at}},
+            {}, function(err, docs) {});
+        var query = graf.approved ? {'$set': {'latest': false}} : {'$set': {'current': false, 'latest': false}};
+        db.grafs.update({'slug': story.slug, 'key': graf.key}, query, {}, function(err, docs) {
+            db.grafs.insert(graf, function(err, docs) {
+                res.jsonp(docs);
             });
         });
+        
+    }, function(err) {
+        res.status(404).jsonp(err);
     });
 });
 
