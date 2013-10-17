@@ -116,7 +116,7 @@ app.post('/api/import', function(req, res){
             story.created_at = new Date();
             story.last_change = story.created_at;
 
-            grafsColl.remove({'story': story.slug}, {}, function(err, docs) {
+            db.grafs.remove({'story': story.slug}, {}, function(err, docs) {
                 grafs.forEach(function(graf, sequence) {
                     graf.story = story.slug;
                     graf.sequence = sequence + 1;
