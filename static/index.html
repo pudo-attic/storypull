@@ -58,8 +58,7 @@
         <script id="edit" type="text/html">
             <div>
                 <form data-bind="submit: doSomething">
-                    <input type="text" name="input" data-bind="value: text">
-                    <input type="text" name="input" data-bind="value: author">
+                    <input type="text" data-bind="value: text">
                     <button data-bind="click: $parent.selectedItem" type="submit">Submit</button>
                 </form>
             </div>
@@ -83,6 +82,7 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="vendor/knockout/build/knockout-raw.js"></script>
+    <script src="vendor/knockout.mapping/knockout.mapping.js"></script>
 
     <script type="text/javascript">
         var viewModel = {};
@@ -92,11 +92,14 @@
             return item === this.selectedItem() ? 'edit' : this.selectedView();
         }.bind(viewModel);
 
+        viewModel.doSomething = function(formElement) {
+            console.log('save')
+        }.bind(viewModel);
 
         // bind data to model
         $.getJSON( "/api/stories/story-of-my-life", function( data ) {
 
-            viewModel.grafs = data.grafs;
+            viewModel.grafs = ko.mapping.fromJS(data.grafs);
 
             ko.applyBindings(viewModel);
 

@@ -10,7 +10,8 @@
     "handlebars": "~1.0.0",
     "jquery-ui": "~1.10.3",
     "font-awesome": "~3.2.1",
-    "knockout": "~2.3.0"
+    "knockout": "~2.3.0",
+    "knockout.mapping": "~2.0.1"
   },
   "devDependencies": {}
 }
