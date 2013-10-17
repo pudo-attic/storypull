@@ -40,6 +40,7 @@ passport.use(new TwitterStrategy({
     dbPromise.done(function(db) {
         var usersColl = db.collection('users');
         delete profile._json.status;
+        delete profile._json.entities;
 
         usersColl.findOne({'screen_name': profile.username}, function(err, user) {
             if (user!==null) {
