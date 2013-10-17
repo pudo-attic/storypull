@@ -43,9 +43,20 @@
       </div>
    </div>
    <div class="container">
+        <header data-bind="template: { name: 'header', data: data }"></header> 
         <form data-bind="submit: doSomething">
             <article data-bind="template: { name: templateToUse, foreach: grafs }"></article>
         </form>
+
+        <script id="header" type="text/html">
+            <div class="row">
+                <div class="col-xs-7">
+                    <h1 data-bind="text: title"></h1>
+                </div>
+                <div class="col-xs-5">
+                </div>
+            </div>
+        </script>
 
         <script id="details" type="text/html">
             <div class="row reading">
@@ -76,8 +87,6 @@
             <p>Credits: <span data-bind="text: author"></span></p>
         </script>
 
-        <p>mock</p>
-
     </div><!-- /.container -->
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -106,7 +115,7 @@
         $.getJSON( "/api/stories/teachers-strike", function( data ) {
 
             viewModel.grafs = ko.mapping.fromJS(data.grafs);
-
+            viewModel.data = ko.mapping.fromJS(data);
 
             ko.applyBindings(viewModel);
 
