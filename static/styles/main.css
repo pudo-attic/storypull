@@ -1,6 +1,4 @@
 
-<<<<<<< HEAD
-
 [contenteditable="true"] {
 
     background-color: white;
@@ -12,7 +10,7 @@
     padding: 2px 3px;
     width: 398px;
 }
-=======
+
 body {
     font-family: 'Lato';
     font-weight: 300;
@@ -42,4 +40,43 @@ h1, h2, h3, h4, h5 {
 #session-status {
     display: none;
 }
->>>>>>> bb85f74dff70c2c6acf7d979387df78e2a39ca08
+
+
+.row .context-info {
+    display: none;
+}
+
+.row:hover .context-info {
+    display: block;
+}
+
+.row .no-context-info {
+    display: block;
+}
+
+.row:hover .no-context-info {
+    display: none;
+}
+
+.row.reading:hover, .editing {
+    background-color: #eee;
+}
+
+p.article-body {
+    font-size: 1.2em;
+}
+
+.large-button {
+    height: 100%;
+    width: 10em;
+    padding: 1em;
+    color: #333;
+    text-transform: uppercase;
+    background-color: #ddd;
+}
+
+.large-button:hover {
+    text-decoration: none;
+    background-color: #ccc;
+    color: #333;
+}

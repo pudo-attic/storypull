@@ -48,19 +48,25 @@
         </form>
 
         <script id="details" type="text/html">
-            <div>
-                <h3 data-bind="text: text"></h3>
-                <p>Credits: <span data-bind="text: author"></span></p>
-                <button data-bind="click: $parent.selectedItem">Edit</button>
+            <div class="row reading">
+                <div class="col-xs-7">
+                    <p class='article-body' data-bind="text: text"></p>
+                </div>
+                <div class="col-xs-5">
+                    <a class="context-info large-button" href='#' data-bind="click: $parent.selectedItem">Suggest an Edit</a>
+                    <p class="no-context-info">Credits: <span data-bind="text: author"></span></p>
+                </div>
             </div>
         </script>
 
         <script id="edit" type="text/html">
-            <div>
-
-                    <input type="text" data-bind="value: text">
-                    <button data-bind="click: $parent.submitItem" type="submit">Submit</button>
-
+            <div class="row editing">
+                <div class="col-xs-7">
+                    <textarea type="text" data-bind="value: text"></textarea>
+                </div>
+                <div class="col-xs-5">
+                    <a class="large-button" data-bind="click: $parent.submitItem" type="submit">Submit</a>
+                </div>
             </div>
         </script>
 
@@ -97,7 +103,7 @@
         }.bind(viewModel);
 
         // bind data to model
-        $.getJSON( "/api/stories/story-of-my-life", function( data ) {
+        $.getJSON( "/api/stories/teachers-strike", function( data ) {
 
             viewModel.grafs = ko.mapping.fromJS(data.grafs);
 
