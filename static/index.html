@@ -16,7 +16,6 @@
         <!-- build:js scripts/vendor/modernizr.js -->
         <script src="vendor/modernizr/modernizr.js"></script>
         <!-- endbuild -->
-        <script src="vendor/handlebars/handlebars.js"></script>
         <script src="js/main.js"></script>
 
     </head>
@@ -45,19 +44,15 @@
    </div>
    <div class="container">
 
-        <article>
+        <article data-bind="template: { name: 'graf-template', foreach: grafs }"></article>
 
 
-        </article>
-
-        <script id="entry-template" type="text/x-handlebars-template">
-          {{#each grafs}}
-            {{#if approved current}}
-                {{text}}
-            {{/if}}
-            <p>{{title}}</p>
-          {{/each}}
+        <script type="text/html" id="graf-template">
+        grafs
+            <h3 data-bind="text: text"></h3>
+            <p>Credits: <span data-bind="text: author"></span></p>
         </script>
+
         <p>mock</p>
 
     </div><!-- /.container -->
@@ -67,15 +62,17 @@
     <script src="vendor/jquery-ui/ui/jquery-ui.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="vendor/knockout/build/knockout-raw.js"></script>
 
     <script type="text/javascript">
+        // bind data to model
         $.getJSON( "/api/stories/story-of-my-life", function( data ) {
-            var source   = $("#entry-template").html();
-            var template = Handlebars.compile(source);
 
-            var context = data;
-            var html    = template(context);
-            $('article').append(html);
+            function MyViewModel() {
+                 this.grafs = data.grafs;
+            }
+            ko.applyBindings(new MyViewModel());
+
         });
     </script>
     <script src="js/session.js"></script>
