@@ -13,6 +13,9 @@ var dbQ = Q.defer(),
     dbPromise = dbQ.promise;
 
 mongo.Db.connect(mongoUri, function (err, db) {
+    db.users = db.collection('users');
+    db.stories = db.collection('stories');
+    db.grafs = db.collection('grafs');
     dbQ.resolve(db);
 });
 
@@ -24,6 +27,28 @@ function makeUUID() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
         var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
         return v.toString(16);
+    });
+}
+
+function getStory(req, slug, callback, errCallback) {
+    dbPromise.done(function(db) {
+        db.stories.findOne({'slug': req.params.slug}, function(err, story) {
+            if (err) {
+                return errCallback(err);
+            }
+            if (story===null) {
+                return errCallback({'status': 'Not found'});
+            }
+            story.uri = makeUri(req, '/api/stories/' + story.slug);
+            var options = {'sort': [['sequence', 1], ['created_at', 1]]};
+            db.grafs.find({'story': story.slug}, options).toArray(function(err, results) {
+                if (err) {
+                    return errCallback(err);
+                }
+                story.grafs = results;
+                return callback(story);
+            });
+        });
     });
 }
 
@@ -45,15 +70,14 @@ passport.use(new TwitterStrategy({
   },
   function(token, tokenSecret, profile, done) {
     dbPromise.done(function(db) {
-        var usersColl = db.collection('users');
         delete profile._json.status;
         delete profile._json.entities;
 
-        usersColl.findOne({'screen_name': profile.username}, function(err, user) {
+        db.users.findOne({'screen_name': profile.username}, function(err, user) {
             if (user!==null) {
                 done(null, user);
             }
-            usersColl.insert(profile._json, function(err, docs) {
+            db.users.insert(profile._json, function(err, docs) {
                 done(null, docs);
             });
         });
@@ -67,17 +91,14 @@ passport.serializeUser(function(user, done) {
 
 passport.deserializeUser(function(id, done) {
     dbPromise.done(function(db) {
-        var usersColl = db.collection('users');
-        usersColl.findOne({'screen_name': id}, function(err, user) {
+        db.users.findOne({'screen_name': id}, function(err, user) {
             done(err, user);
         });
     });
 });
 
 app.get('/api/status', function(req, res) {
-    dbPromise.done(function(db) {
-        res.jsonp({'status': 'ok', 'user': req.user});
-    });
+    res.jsonp({'status': 'ok', 'user': req.user});
 });
 
 app.get('/api/auth/twitter', passport.authenticate('twitter'));
@@ -89,8 +110,6 @@ app.get('/api/auth/callback',
 app.post('/api/import', function(req, res){
     dbPromise.done(function(db) {
         var stories = req.body.stories || [];
-        var storiesColl = db.collection('stories');
-        var grafsColl = db.collection('grafs');
 
         stories.forEach(function(story) {
             var grafs = story.grafs || [];
@@ -103,11 +122,11 @@ app.post('/api/import', function(req, res){
                     graf.sequence = sequence + 1;
                     graf.key = makeUUID();
                     graf.created_at = story.created_at;
-                    grafsColl.insert(graf, function(err, docs) {});
+                    db.grafs.insert(graf, function(err, docs) {});
                 });
             });
             delete story.grafs;
-            storiesColl.update({'slug': story.slug}, story, {'upsert': true}, function(err, docs) {});
+            db.stories.update({'slug': story.slug}, story, {'upsert': true}, function(err, docs) {});
         });
         res.jsonp({'status': 'ok'});
     });
@@ -115,8 +134,7 @@ app.post('/api/import', function(req, res){
 
 app.get('/api/stories', function(req, res) {
     dbPromise.done(function(db) {
-        var storiesColl = db.collection('stories');
-        storiesColl.find().toArray(function(err, results) {
+        db.stories.find().toArray(function(err, results) {
             results.forEach(function(story) {
                 story.uri = makeUri(req, '/api/stories/' + story.slug);
             });
@@ -126,28 +144,15 @@ app.get('/api/stories', function(req, res) {
 });
 
 app.get('/api/stories/:slug', function(req, res) {
-    dbPromise.done(function(db) {
-        var storiesColl = db.collection('stories');
-        var grafsColl = db.collection('grafs');
-
-        storiesColl.findOne({'slug': req.params.slug}, function(err, story) {
-            story.uri = makeUri(req, '/api/stories/' + story.slug);
-            if (story===null) {
-                res.status(404).jsonp({'status': 'Not found'});
-            }
-            grafsColl.find({'story': story.slug}, {'sort': [['sequence', 1], ['created_at', 1]]}).toArray(function(err, results) {
-                story.grafs = results;
-                res.jsonp(story);
-            });
-        });
-        
+    getStory(req, req.params.slug, function(story) {
+        res.jsonp(story);
+    }, function(err) {
+        res.status(404).jsonp(err);
     });
 });
 
 app.post('/api/stories/:slug/graf', function(req, res) {
     dbPromise.done(function(db) {
-        var storiesColl = db.collection('stories');
-        var grafsColl = db.collection('grafs');
         var graf = req.body;
 
         if (!req.user) {
@@ -158,7 +163,7 @@ app.post('/api/stories/:slug/graf', function(req, res) {
             res.status(400).jsonp({'status': 'No text'});
         }
 
-        storiesColl.findOne({'slug': req.params.slug}, function(err, story) {
+        db.stories.findOne({'slug': req.params.slug}, function(err, story) {
             if (!story) {
                 res.status(404).jsonp({'status': 'No such story'});
             }
@@ -170,11 +175,11 @@ app.post('/api/stories/:slug/graf', function(req, res) {
 
             // todo: generate and update sequence
 
-            storiesColl.update({'slug': story.slug}, {'$set': {'last_change': graf.created_at}},
+            db.stories.update({'slug': story.slug}, {'$set': {'last_change': graf.created_at}},
                 {}, function(err, docs) {});
             var query = graf.approved ? {'$set': {'latest': false}} : {'$set': {'current': false, 'latest': false}};
-            grafsColl.update({'slug': story.slug, 'key': graf.key}, query, {}, function(err, docs) {
-                grafsColl.insert(graf, function(err, docs) {
+            db.grafs.update({'slug': story.slug, 'key': graf.key}, query, {}, function(err, docs) {
+                db.grafs.insert(graf, function(err, docs) {
                     res.jsonp(docs);
                 });
             });
