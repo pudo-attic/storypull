@@ -30,6 +30,18 @@ function makeUUID() {
     });
 }
 
+function getProfiles(screen_names, callback) {
+    dbPromise.done(function(db) {
+        db.users.find({'screen_name': {'$in': screen_names}}).toArray(function(err, results) {
+            var profiles = {};
+            results.forEach(function(p) {
+                profiles[p.screen_name] = p;
+            });
+            callback(profiles);
+        });
+    });
+}
+
 function getStory(req, slug, callback, errCallback) {
     dbPromise.done(function(db) {
         db.stories.findOne({'slug': req.params.slug}, function(err, story) {
@@ -45,8 +57,20 @@ function getStory(req, slug, callback, errCallback) {
                 if (err) {
                     return errCallback(err);
                 }
+                var screen_names = [story.author];
                 story.grafs = results;
-                return callback(story, db);
+                story.grafs.forEach(function(g) {
+                    if (g.author && screen_names.indexOf(g.author) == -1) {
+                        screen_names.push(g.author);
+                    }
+                });
+                getProfiles(screen_names, function(profiles) {
+                    story.author_data = profiles[story.author];
+                    story.grafs.forEach(function(g) {
+                        g.author_data = profiles[story.author];
+                    });
+                    return callback(story, db);
+                });
             });
         });
     });
