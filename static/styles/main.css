@@ -9,5 +9,22 @@ h1, h2, h3, h4, h5 {
 }
 
 .navbar-brand {
-    color: #333;
+    c-olor: #333;
+    text-transform: lowercase;
+    font-weight: 700;
+    color: rgb(250, 115, 0);
+    font-size: 1.5em;
+}
+
+.navbar-right a {
+    color: rgb(250, 115, 0);
+}
+
+.navbar-right a:hover {
+    text-decoration: none;
+    color: rgb(250, 115, 0);
+}
+
+#session-status {
+    display: none;
 }
