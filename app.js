@@ -13,6 +13,10 @@ mongo.Db.connect(mongoUri, function (err, db) {
     dbQ.resolve(db);
 });
 
+function makeUri(req, path) {
+    return req.protocol + "://" + req.get('host') + path;
+}
+
 var app = express();
 app.use(express.logger());
 app.use(express.bodyParser());
@@ -44,6 +48,36 @@ app.post('/api/import', function(req, res){
             storiesColl.update({'slug': story.slug}, story, {'upsert': true}, function(err, docs) {});
         });
         res.jsonp({'status': 'ok'});
+    });
+});
+
+app.get('/api/stories', function(req, res) {
+    dbPromise.done(function(db) {
+        var storiesColl = db.collection('stories');
+        storiesColl.find().toArray(function(err, results) {
+            results.forEach(function(story) {
+                story.uri = makeUri(req, '/api/stories/' + story.slug);
+            });
+            res.jsonp({'results': results});
+        });
+    });
+});
+
+app.get('/api/stories/:slug', function(req, res) {
+    dbPromise.done(function(db) {
+        var storiesColl = db.collection('stories');
+        var grafsColl = db.collection('grafs');
+
+        storiesColl.findOne({'slug': req.params.slug}, function(err, story) {
+            if (story===null) {
+                res.status(404).jsonp({'status': 'Not found'});
+            }
+            grafsColl.find({'story': story.slug}).toArray(function(err, results) {
+                story.grafs = results;
+                res.jsonp(story);
+            });
+        });
+        
     });
 });
 
