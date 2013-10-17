@@ -32,15 +32,12 @@
           </button>
           <a class="navbar-brand" href="#">Storypull</a>
         </div>
-        <form class="navbar-form navbar-right" >
-            <div class="form-group">
-              <input type="text" placeholder="Email" class="form-control">
-            </div>
-            <div class="form-group">
-              <input type="password" placeholder="Password" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-success">Sign in</button>
-        </form>
+        <div class="navbar-right">
+            <a id="sign-in" href="/api/auth/twitter" class="btn btn-default navbar-btn"><i class="icon-twitter-sign"></i> Sign in</a>
+            <p id="session-status" class="navbar-text">
+                <i class="icon-twitter-sign"></i> Signed in as <span id="current-user"></span>
+            </p>
+        </div>
       </div>
    </div>
    <div class="container">
@@ -78,6 +75,6 @@
             $('article').append(html);
         });
     </script>
-
+    <script src="js/session.js"></script>
     </body>
 </html>
