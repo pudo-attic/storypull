@@ -24,9 +24,21 @@ function makeUri(req, path) {
 }
 
 function makeUUID() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    return 'xxxxxxxxxxxx'.replace(/[x]/g, function(c) {
         var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
         return v.toString(16);
+    });
+}
+
+function getProfiles(screen_names, callback) {
+    dbPromise.done(function(db) {
+        db.users.find({'screen_name': {'$in': screen_names}}).toArray(function(err, results) {
+            var profiles = {};
+            results.forEach(function(p) {
+                profiles[p.screen_name] = p;
+            });
+            callback(profiles);
+        });
     });
 }
 
@@ -45,8 +57,20 @@ function getStory(req, slug, callback, errCallback) {
                 if (err) {
                     return errCallback(err);
                 }
+                var screen_names = [story.author];
                 story.grafs = results;
-                return callback(story);
+                story.grafs.forEach(function(g) {
+                    if (g.author && screen_names.indexOf(g.author) == -1) {
+                        screen_names.push(g.author);
+                    }
+                });
+                getProfiles(screen_names, function(profiles) {
+                    story.author_data = profiles[story.author];
+                    story.grafs.forEach(function(g) {
+                        g.author_data = profiles[story.author];
+                    });
+                    return callback(story, db);
+                });
             });
         });
     });
@@ -152,8 +176,12 @@ app.get('/api/stories/:slug', function(req, res) {
 });
 
 app.post('/api/stories/:slug/graf', function(req, res) {
-    dbPromise.done(function(db) {
+    getStory(req, req.params.slug, function(story, db) {
         var graf = req.body;
+
+        if (!story) {
+            res.status(404).jsonp({'status': 'No such story'});
+        }
 
         if (!req.user) {
             res.status(401).jsonp({'status': 'Not logged in'});
@@ -163,27 +191,35 @@ app.post('/api/stories/:slug/graf', function(req, res) {
             res.status(400).jsonp({'status': 'No text'});
         }
 
-        db.stories.findOne({'slug': req.params.slug}, function(err, story) {
-            if (!story) {
-                res.status(404).jsonp({'status': 'No such story'});
-            }
-            graf.latest = true;
-            graf.author = req.user.screen_name;
-            graf.approved = (story.author === req.user.screen_name);
-            graf.created_at = new Date();
-            graf.key = graf.key || makeUUID();
+        graf.latest = true;
+        graf.author = req.user.screen_name;
+        graf.approved = (story.author === req.user.screen_name);
+        graf.created_at = new Date();
 
-            // todo: generate and update sequence
+        if (!graf.key && !graf.sequence) {
+            var max = 0;
+            // todo: generate and update sequence - implement shifting.
+            story.grafs.forEach(function(g) {
+                if (g.sequence > max) {
+                    max = g.sequence;
+                }
+            });
+            graf.sequence = max + 1;
+        }
 
-            db.stories.update({'slug': story.slug}, {'$set': {'last_change': graf.created_at}},
-                {}, function(err, docs) {});
-            var query = graf.approved ? {'$set': {'latest': false}} : {'$set': {'current': false, 'latest': false}};
-            db.grafs.update({'slug': story.slug, 'key': graf.key}, query, {}, function(err, docs) {
-                db.grafs.insert(graf, function(err, docs) {
-                    res.jsonp(docs);
-                });
+        graf.key = graf.key || makeUUID();
+
+        db.stories.update({'slug': story.slug}, {'$set': {'last_change': graf.created_at}},
+            {}, function(err, docs) {});
+        var query = graf.approved ? {'$set': {'latest': false}} : {'$set': {'current': false, 'latest': false}};
+        db.grafs.update({'slug': story.slug, 'key': graf.key}, query, {}, function(err, docs) {
+            db.grafs.insert(graf, function(err, docs) {
+                res.jsonp(docs);
             });
         });
+
+    }, function(err) {
+        res.status(404).jsonp(err);
     });
 });
 

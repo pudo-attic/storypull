@@ -1,4 +1,5 @@
 
+<<<<<<< HEAD
 
 [contenteditable="true"] {
 
@@ -11,3 +12,34 @@
     padding: 2px 3px;
     width: 398px;
 }
+=======
+body {
+    font-family: 'Lato';
+    font-weight: 300;
+}
+
+h1, h2, h3, h4, h5 {
+    font-weight: 700;
+}
+
+.navbar-brand {
+    c-olor: #333;
+    text-transform: lowercase;
+    font-weight: 700;
+    color: rgb(250, 115, 0);
+    font-size: 1.5em;
+}
+
+.navbar-right a {
+    color: rgb(250, 115, 0);
+}
+
+.navbar-right a:hover {
+    text-decoration: none;
+    color: rgb(250, 115, 0);
+}
+
+#session-status {
+    display: none;
+}
+>>>>>>> bb85f74dff70c2c6acf7d979387df78e2a39ca08
