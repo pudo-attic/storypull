@@ -73,10 +73,12 @@
         <script id="edit" type="text/html">
             <div class="row editing">
                 <div class="col-xs-7">
-                    <textarea type="text" data-bind="value: text"></textarea>
+                    <div class="article-body">
+                        <textarea type="text" data-bind="value: text"></textarea>
+                    </div>
                 </div>
                 <div class="col-xs-5">
-                    <a class="large-button" data-bind="click: $parent.submitItem" type="submit">Submit</a>
+                    <a class="large-button" data-bind="click: $parent.submitItem" href="#">Submit</a>
                 </div>
             </div>
         </script>

@@ -58,12 +58,27 @@ h1, h2, h3, h4, h5 {
     display: none;
 }
 
-.row.reading:hover p.article-body, .editing {
+.row.reading:hover p.article-body, .editing .article-body {
     background-color: #eee;
+}
+
+.row.reading {
+    min-height: 4em;
 }
 
 p.article-body {
     font-size: 1.2em;
+}
+
+.editing textarea {
+    width: 100%;
+    border: 1px solid #ddd;
+    margin: 0.3em 0 0.3em 0;
+    padding: 0.2em;
+
+    font-family: 'Lato';
+    font-weight: 300;
+    min-height: 4em;
 }
 
 .large-button {
