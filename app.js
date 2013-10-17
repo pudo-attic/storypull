@@ -4,7 +4,7 @@ var express = require('express'),
 
 var mongoUri = process.env.MONGOLAB_URI ||
   process.env.MONGOHQ_URL ||
-  'mongodb://localhost/newspull';
+  'mongodb://localhost/storypull';
 
 var dbQ = Q.defer(),
     dbPromise = dbQ.promise;
@@ -15,13 +15,35 @@ mongo.Db.connect(mongoUri, function (err, db) {
 
 var app = express();
 app.use(express.logger());
+app.use(express.bodyParser());
 app.use(express.errorHandler());
 app.use(express.static(__dirname + '/static'));
 
-app.get('/', function(req, res) {
+app.get('/api/status', function(req, res) {
     dbPromise.done(function(db) {
-        console.log(db);
-        res.send('Hello World');
+        res.jsonp({'status': 'ok'});
+    });
+});
+
+app.post('/api/import', function(req, res){
+    dbPromise.done(function(db) {
+        var stories = req.body.stories || [];
+        var storiesColl = db.collection('stories');
+        var grafsColl = db.collection('grafs');
+
+        stories.forEach(function(story) {
+            var grafs = story.grafs || [];
+
+            grafsColl.remove({'story': story.slug}, {}, function(err, docs) {
+                grafs.forEach(function(graf) {
+                    graf.story = story.slug;
+                    grafsColl.insert(graf, function(err, docs) {});
+                });
+            });
+            delete story.grafs;
+            storiesColl.update({'slug': story.slug}, story, {'upsert': true}, function(err, docs) {});
+        });
+        res.jsonp({'status': 'ok'});
     });
 });
 

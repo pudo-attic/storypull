@@ -1,0 +1,13 @@
+{
+    "stories": [{
+        "title": "The Story of My Life",
+        "slug": "story-of-my-life",
+        "tagline": "This is the story of my life",
+        "author": "pudo",
+        "grafs": [
+            {"text": "Life is like a kids's trouser, short and shitty.", "sequence": 1, "author": "pudo", "approved": true, "current": true, "key": "47879923"},
+            {"text": "In America, you can always find a party. In Soviet Russia, the party can always find you.", "sequence": 10, "author": "pudo", "approved": true, "current": true, "key": "48830843"},
+            {"text": "The fat lady sings.", "sequence": 100, "author": "pudo", "approved": true, "current": true, "key": "478723"}
+        ]
+    }]
+}
