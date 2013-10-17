@@ -1,0 +1,9 @@
+{
+  "name": "newspull",
+  "description": "pull requests for news",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "express": "3.x"
+  }
+}
