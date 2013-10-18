@@ -20,6 +20,11 @@ h1, h2, h3, h4, h5 {
     font-weight: 700;
 }
 
+p {
+    padding: 0.3em 0.8em;
+}
+
+
 .navbar-brand {
     c-olor: #333;
     text-transform: lowercase;
@@ -41,9 +46,22 @@ h1, h2, h3, h4, h5 {
     display: none;
 }
 
+.reading {
+    overflow: auto;
+}
 
 .row .context-info {
-    display: none;
+   /* display: none;*/
+   display:block;
+}
+
+.row .col-xs-7 {
+    padding-right: 3px;
+}
+
+.row .col-xs-5 {
+    padding-left: 0;
+    height: auto !important;
 }
 
 .row:hover .context-info {
@@ -54,12 +72,23 @@ h1, h2, h3, h4, h5 {
     display: block;
 }
 
+.row .no-context-info a{
+    display: block;
+    height: auto !important;
+}
+
 .row:hover .no-context-info {
     display: none;
 }
 
-.row.reading:hover p.article-body, .editing {
+.row.reading:hover p.article-body, .editing span {
     background-color: #eee;
+}
+
+.editing span {
+    display: block;
+    padding: 0.3em 0.7em;
+    margin: 0 0 10px;
 }
 
 p.article-body {
@@ -73,10 +102,32 @@ p.article-body {
     color: #333;
     text-transform: uppercase;
     background-color: #ddd;
+    display: block;
 }
 
 .large-button:hover {
     text-decoration: none;
     background-color: #ccc;
     color: #333;
+}
+
+textarea {
+    border-radius: 5px;
+    border: 1px solid #eee;
+    font-family: 'Lato' !important;
+    font-weight: 300;
+    width: 100%;
+    font-size: 1.2em;
+}
+
+input[type='checkbox'] {
+    text-transform: uppercase;
+}
+
+input.source {
+    margin-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    width: 390px;
+
 }
