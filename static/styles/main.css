@@ -78,6 +78,14 @@ p {
     background-color: #eee;
 }
 
+.editing {
+    margin-bottom: 5px;
+}
+
+.editing .article-body {
+    padding: 0.3em 0.7em;
+}
+
 .row.reading {
     min-height: 4em;
 }

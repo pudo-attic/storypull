@@ -60,18 +60,22 @@
         </script>
 
         <script id="details" type="text/html">
-            <div class="row reading">
-                <div class="col-xs-7">
-                    <p class='article-body' data-bind="text: text"></p>
-                </div>
-                <div class="col-xs-5">
-                    <a class="context-info large-button" href='#' data-bind="click: $parent.selectedItem">Suggest an Edit</a>
+            <!-- ko if: approved -->
+                <!-- ko if: current -->
+                <div class="row reading">
+                    <div class="col-xs-7">
+                        <p class='article-body' data-bind="text: text"></p>
+                    </div>
+                    <div class="col-xs-5">
+                        <a class="context-info large-button" href='#' data-bind="click: $parent.selectedItem">Suggest an Edit</a>
 
-                    <!-- ko if: author() != $parent.author -->
-                    <p class="no-context-info">Credits: <span data-bind="text: author"></span></p>
-                    <!-- /ko -->
+                        <!-- ko if: author() != $parent.author -->
+                        <p class="no-context-info">Credits: <span data-bind="text: author"></span></p>
+                        <!-- /ko -->
+                    </div>
                 </div>
-            </div>
+                <!-- /ko -->
+            <!-- /ko -->
         </script>
 
         <script id="edit" type="text/html">
