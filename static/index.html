@@ -102,7 +102,7 @@
               class="incorporate large-button" ng-click="approve(graf)">Incoporate Edit</a>
 
             <a ng-show="!reviewMode"
-              class="context-info large-button" ng-click="graf.editing=true">Suggest an Edit</a>
+              class="context-info large-button" ng-click="edit(graf)">Suggest an Edit</a>
 
             <div ng-show="!reviewMode && graf.contributed" class="no-context-info contrib-credit">
                 <img width="30" height="30" ng-src="{{graf.author_data.profile_image_url}}" />

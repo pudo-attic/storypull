@@ -258,7 +258,6 @@ app.post('/api/stories/:slug/approve/:key/:id', function(req, res) {
 
         db.stories.update({'slug': story.slug}, {'$set': {'last_change': new Date()}},
             {}, function(err, docs) {});
-        //res.jsonp(story);
         
         db.grafs.update({'story': story.slug, 'key': req.params.key}, {'$set': {'current': false}},
             {'multi': true}, function(err, docs) {

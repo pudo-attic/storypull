@@ -59,6 +59,14 @@ function StoryCtrl($scope, $location, $routeParams, $http) {
         return false;
     };
 
+    $scope.edit = function(graf) {
+        if (!$scope.logged_in) {
+            document.location = '/api/auth/twitter';
+        } else {
+            graf.editing = true;
+        }
+    };
+
     $scope.update = function(obj) {
         var graf = angular.copy(obj);
         obj.editing = false;
