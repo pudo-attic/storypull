@@ -1,0 +1,38 @@
+{
+    "stories": [{
+        "title": "The Story of My Life",
+        "slug": "story-of-my-life",
+        "tagline": "This is the story of my life",
+        "author": "pudo",
+        "grafs": [
+            {"text": "Life is like a kids's trouser, short and shitty.", "author": "pudo", "approved": true, "current": true, "key": "47879923"},
+            {"text": "In America, you can always find a party. In Soviet Russia, the party can always find you.", "author": "pudo", "approved": true, "current": true, "key": "48830843"},
+            {"text": "The fat lady sings.", "author": "pudo", "approved": true, "current": true, "key": "478723"}
+        ]
+    },
+    {
+        "title": "Teachers' strike: Thousands of schools shut in England",
+        "slug": "teachers-strike",
+        "tagline": "Thousands of schools were closed across much of England as teachers went out on strike over pay, pensions and jobs.",
+        "author": "pudo",
+        "grafs": [
+            {"text": "Some vitriolic things about teachers", "author": "pudo", "approved": false, "current": false},
+            {"text": "Teachers in London, Cumbria, the South East, North East and South West have been taking part with nearly 3,500 schools shut or partially closed.", "author": "pudo", "approved": true, "current": true},
+            {"text": "The action was part of a continuing campaign of regional strikes involving members of the NUT and NASUWT unions.", "author": "pudo", "approved": true, "current": true},
+            {"text": "Prie Minister David Cameron said the strike was 'inconvenient for parents' and 'not good for pupils' education'.", "author": "pudo", "approved": true, "current": true},
+            {"text": "Prime Minister David Cameron said the strike was 'inconvenient for parents' and 'not good for pupils' education'.", "author": "pudo", "approved": true, "current": false},
+            {"text": "The incompetancy of parliment is astounding", "author": "pudo", "approved": false, "current": false},
+            {"text": "NUT general secretary Christine Blower, said the union regretted the disruption caused to pupils and parents but teachers felt they had 'no other choice'. ", "author": "pudo", "approved": true, "current": true},
+            {"text": "Major rallies have been taking place in Bristol, Durham and London, with smaller events in other areas, including Brighton, Carlisle and Plymouth.", "author": "pudo", "approved": true, "current": true},
+            {"text": "Teachers are objecting to proposals by Education Secretary Michael Gove to bring in performance-related pay, increase their workloads and make changes to their pensions.", "author": "pudo", "approved": true, "current": true},
+            {"text": "Twenty out of 33 London boroughs provided information to BBC London 94.9 about the number of schools affected.", "author": "pudo", "approved": true, "current": true},
+            {"text": "Of those, about 445 schools were completely closed and 450 partially closed.", "author": "pudo", "approved": true, "current": true},
+            {"text": "And in Tyne and Wear, at least 471 schools were affected by the industrial action.", "author": "pudo", "approved": true, "current": true},
+            {"text": "Head teacher Roberta Kirby, from Fernhurst Junior School, in Portsmouth, said the government had 'declared war' on teachers.", "author": "pudo", "approved": true, "current": true},
+            {"text": "More than 200 schools in Hampshire and the Isle of Wight were affected by the action.", "author": "pudo", "approved": true, "current": true},
+            {"text": "She said: 'If we cannot offer good wages and a pension that staff pay into that reflects the work they do, then we are not going to be able to attract the best graduates.'", "author": "pudo", "approved": true, "current": true},
+            {"text": "Responding to the impact of the strike, some parents said they had found it difficult to find alternative childcare.", "author": "pudo", "approved": true, "current": true},
+            {"text": "The BBC's Sarah Ransome said: 'People in Plymouth have been telling me that finding alternative childcare because of the strike has been 'quite a headache'.'", "author": "pudo", "approved": true, "current": true}
+        ]
+    }]
+}
