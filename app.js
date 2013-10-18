@@ -2,7 +2,8 @@ var express = require('express'),
     mongo = require('mongodb'),
     Q = require('q'),
     passport = require('passport'),
-    TwitterStrategy = require('passport-twitter').Strategy;
+    TwitterStrategy = require('passport-twitter').Strategy,
+    MongoStore = require('connect-mongo')(express);
 
 
 var mongoUri = process.env.MONGOLAB_URI ||
@@ -37,7 +38,6 @@ function getProfiles(screen_names, callback) {
             results.forEach(function(p) {
                 profiles[p.screen_name] = p;
             });
-            console.log(profiles);
             callback(profiles);
         });
     });
@@ -83,7 +83,12 @@ app.use(express.errorHandler());
 app.use(express.static(__dirname + '/static'));
 app.use(express.cookieParser());
 app.use(express.bodyParser());
-app.use(express.session({ secret: process.env.SECRET || 'foobar' }));
+app.use(express.session({
+  store: new MongoStore({
+    url: mongoUri
+  }),
+  secret: '1234567890QWERTY'
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(app.router);
@@ -177,6 +182,7 @@ app.get('/api/stories/:slug', function(req, res) {
 });
 
 app.post('/api/stories/:slug/graf', function(req, res) {
+    console.log(req);
     getStory(req, req.params.slug, function(story, db) {
         var graf = req.body;
 
@@ -190,6 +196,10 @@ app.post('/api/stories/:slug/graf', function(req, res) {
 
         if (!graf || !graf.text || graf.text.length===0) {
             res.status(400).jsonp({'status': 'No text'});
+        }
+
+        if (graf._id) {
+            delete graf._id;
         }
 
         graf.latest = true;
@@ -218,7 +228,11 @@ app.post('/api/stories/:slug/graf', function(req, res) {
         var query = graf.approved ? {'$set': {'latest': false}} : {'$set': {'current': false, 'latest': false}};
         db.grafs.update({'slug': story.slug, 'key': graf.key}, query, {}, function(err, docs) {
             db.grafs.insert(graf, function(err, docs) {
-                res.jsonp(docs);
+                getStory(req, story.slug, function(story) {
+                    res.jsonp(story);
+                }, function(err) {
+                    res.status(404).jsonp(err);
+                });
             });
         });
 
