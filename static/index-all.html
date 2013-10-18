@@ -43,9 +43,21 @@
       </div>
    </div>
    <div class="container">
-        <form data-bind="submit: saveItem">
+        <header data-bind="template: { name: 'header', data: data }"></header>
+
+
             <article data-bind="template: { name: templateToUse, foreach: grafs }"></article>
-        </form>
+
+
+        <script id="header" type="text/html">
+            <div class="row">
+                <div class="col-xs-7">
+                    <h1 data-bind="text: title"></h1>
+                </div>
+                <div class="col-xs-5">
+                </div>
+            </div>
+        </script>
 
         <script id="details" type="text/html">
             <div class="row reading">
@@ -66,22 +78,22 @@
 
             <div class="row editing">
                 <div class="col-xs-7">
-                    <span>
+                    <div class="article-body">
                         <textarea type="text" data-bind="value: text"></textarea>
+
                         <div><input type="checkbox" value="minorChange" data-bind="checked: $parent.minorChange" /> MINOR CHANGE
                         <!-- ko ifnot: $parent.minorChange() -->
                         <input class="source" data-bind="value: source" placeholder="Add link to source of information" />
                         <!-- /ko --></div>
-
-                    </span>
+                    </div>
                 </div>
                 <div class="col-xs-5">
                     <a class="large-button" data-bind="click: $parent.saveItem" type="submit">Submit</a>
+
                 </div>
 
             </div>
         </script>
-
 
     </div><!-- /.container -->
 
@@ -121,11 +133,14 @@
 
             viewModel.grafs = ko.mapping.fromJS(data.grafs);
 
+
             // $.each(viewModel.grafs, function(index, value){
             //     //add minor change to viewModel
             //     viewModel.grafs[index].minorChange = ko.observable(true);
             //     //add source to viewModel
             // });
+
+            viewModel.data = ko.mapping.fromJS(data);
 
             ko.applyBindings(viewModel);
 
