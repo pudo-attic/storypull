@@ -188,15 +188,19 @@
 
             viewModel.grafs = ko.mapping.fromJS(data.grafs);
 
+            var contributors = [],
+                contributorNames = [];
 
-            // $.each(viewModel.grafs, function(index, value){
-            //     //add minor change to viewModel
-            //     viewModel.grafs[index].minorChange = ko.observable(true);
-            //     //add source to viewModel
-            // });
+            $.each(data.grafs, function(i, g) {
+                if (g.author_data && g.author != data.author && contributorNames.indexOf(g.author) == -1) {
+                    contributors.push(g.author_data);
+                    contributorNames.push(g.author);
+                }
+            });
+
+            viewModel.contributors = contributors;
 
             viewModel.data = ko.mapping.fromJS(data);
-            
         }
 
         // bind data to model
