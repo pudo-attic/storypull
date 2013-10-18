@@ -82,7 +82,8 @@
                 <!-- ko if: current -->
                 <div class="row reading">
                     <div class="col-xs-7">
-                        <p class='article-body' data-bind="text: text"></p>
+                            <p class='article-body' data-bind="text: text"></p>
+
                     </div>
                     <div class="col-xs-5">
                         <a class="context-info large-button" href='#' data-bind="click: $parent.selectedItem">Suggest an Edit</a>
@@ -122,7 +123,7 @@
                         <!-- ko ifnot: approved()-->
                             <!-- ko if: author() != $parent.user -->
                                 <!-- ko if: author() != $parent.author -->
-                                <a class="context-info large-button" href='#' data-bind="click: $parent.approveItem">Incoporate Edit</a>
+                                <a class="incorporate large-button" href='#' data-bind="click: $parent.approveItem">Incoporate Edit</a>
                                 <!-- /ko -->
                             <!-- /ko -->
                         <!-- /ko -->
@@ -168,7 +169,6 @@
 
         var viewModel = {};
         viewModel.isSaving = ko.observable(false);
-
         viewModel.selectedView = ko.observable("details");
         viewModel.selectedItem = ko.observable();
         viewModel.minorChange = ko.observable(true);
@@ -187,6 +187,8 @@
 
         viewModel.saveItem = function(form){
             viewModel.isSaving(true);
+
+            console.log(this.selectedItem().text())
             var graf = ko.toJS(this.selectedItem());
             var grafJSON = ko.toJSON(this.selectedItem());
             var dfd = $.ajax({
@@ -204,12 +206,12 @@
             });
         }.bind(viewModel);
 
-        viewModel.approveItem = function(form){
-            this.selecteItem.approved(true);
-            viewModel.isSaving(true);
-            var graf = ko.toJS(this.selectedItem());
+        viewModel.approveItem = function(item){
+            item.approved(true);
 
-            var grafJSON = ko.toJSON(this.selectedItem());
+            var graf = ko.toJS(item);
+
+            var grafJSON = ko.toJSON(item);
             var dfd = $.ajax({
                 url: '/api/stories/' + graf.story + '/graf',
                 data: grafJSON,
@@ -226,6 +228,8 @@
         }.bind(viewModel);
 
         viewModel.templateToUse = function(item) {
+            item.tmpEdit = item.text();
+
             if (item === this.selectedItem() && viewModel.isSaving()) {
                 viewModel.isSaving(false);
                 return 'details';
