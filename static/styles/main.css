@@ -183,3 +183,15 @@ input.source {
 .view-all {
     float: right !important;
 }
+
+.contrib-credit img {
+    float: left;
+}
+
+.contrib-credit .credit {
+    background-color: #eee;
+    margin: 0 0 0 35px;
+    padding: 0.3em;
+    min-height: 30px;
+    text-transform: uppercase;
+}

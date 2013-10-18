@@ -43,14 +43,13 @@
       </div>
    </div>
    <div class="container">
-          <ul class="nav nav-tabs">
-          <li class="active" data-bind="css: {active: !viewAll()}, click: showViewCurrent"><a href="#">Home</a></li>
-          <li class="view-all" data-bind="css: {active: viewAll}, click: showViewAll"><a href="#">VIEW ALL SUMISSIONS</a></li>
-
-        </ul>
 
         <header data-bind="template: { name: 'header', data: data }"></header>
 
+        <ul class="nav nav-tabs">
+            <li class="active" data-bind="css: {active: !viewAll()}, click: showViewCurrent"><a href="#">Home</a></li>
+            <li class="view-all" data-bind="css: {active: viewAll}, click: showViewAll"><a href="#">VIEW ALL SUMISSIONS</a></li>
+        </ul>
 
         <article data-bind="template: { name: templateToUse, foreach: grafs }"></article>
 
@@ -76,7 +75,10 @@
                         <a class="context-info large-button" href='#' data-bind="click: $parent.selectedItem">Suggest an Edit</a>
 
                         <!-- ko if: author() != $parent.author -->
-                        <p class="no-context-info">Credits: <span data-bind="text: author"></span></p>
+                        <div class="no-context-info contrib-credit">
+                            <img width="30" height="30" data-bind="attr: { src: author_data.profile_image_url }" />
+                            <div class="credit">Improved by @<span data-bind="text: author"></span></div>
+                        </div>
                         <!-- /ko -->
                     </div>
                 </div>
@@ -91,12 +93,12 @@
 
                         <!-- ko if: approved()-->
                             <!-- ko ifnot: current() -->
-                            <img width="20" height="20" src=""/>
+                            <img width="20" height="20" data-bind="attr: { src: author_data.profile_image_url }" />
                              <p class="author">ACCEPTED EDIT by <span data-bind="text: author"></span></p>
                             <!-- /ko -->
                         <!-- /ko -->
                         <!-- ko ifnot: approved()-->
-                            <img width="20" height="20" src=""/>
+                            <img width="20" height="20" data-bind="attr: { src: author_data.profile_image_url }" />
                             <p class="author">PENDING EDIT by <span data-bind="text: author"></span></p>
                         <!-- /ko -->
                         <p class='article-body' data-bind="text: text"></p>
