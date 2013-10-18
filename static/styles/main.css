@@ -131,6 +131,7 @@ p.article-body {
     text-transform: uppercase;
     background-color: #ddd;
     display: block;
+    cursor: pointer;
 }
 
 .large-button:hover {
@@ -164,7 +165,7 @@ input.source {
     background-color: #eee;
 }
 
-.details-all.reading .approved {
+.details-all.reading .contributed.approved {
     background-color: #d0f682 !important;
 }
 
@@ -194,6 +195,10 @@ input.source {
     padding: 0.3em;
     min-height: 30px;
     text-transform: uppercase;
+}
+
+.nav.nav-tabs li {
+    cursor: pointer;
 }
 
 .nav.nav-tabs li a.contributors {

@@ -1,283 +1,120 @@
 <!doctype html>
-<!--[if lt IE 7]>      <html lang="de" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html lang="de" class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html lang="de" class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html lang="de" class="no-js"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Storypull</title>
-        <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0">
-        <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap.min.css">
-        <link href="vendor/font-awesome/css/font-awesome.css" rel="stylesheet">
-        <link href='http://fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'>
-        <!-- build:css(.tmp) styles/main.css -->
-        <link rel="stylesheet" href="styles/main.css">
-        <!-- endbuild -->
-        <!-- build:js scripts/vendor/modernizr.js -->
-        <script src="vendor/modernizr/modernizr.js"></script>
-        <!-- endbuild -->
-        <script src="js/main.js"></script>
-        <link rel="shortcut icon" href="http://assets.pudo.org/img/opennews-favicon.ico" type="image/x-icon" />
-    </head>
-    <body>
-
+<html lang="de" ng-app="storypull">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Storypull</title>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0">
+    <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap.min.css">
+    <link href="vendor/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'>
+    
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="shortcut icon" href="http://assets.pudo.org/img/opennews-favicon.ico" type="image/x-icon" />
+  </head>
+  <body ng-controller="AppCtrl">
     <div class="navbar">
       <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Storypull.</a>
-        </div>
-        <div class="navbar-right">
-            <p id="session-status" class="navbar-text">
-                <i class="icon-twitter-sign"></i> Ohai, <span id="current-user"></span>
-            </p>
-            <p id="sign-in" class="navbar-text">
-                <a href="/api/auth/twitter"><i class="icon-twitter-sign"></i> Sign in</a>
-            </p>
-        </div>
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Storypull.</a>
       </div>
-   </div>
-   <div class="container">
-
-        <header data-bind="template: { name: 'header', data: data }"></header>
-
-        <ul class="nav nav-tabs">
-            <li class="active" data-bind="css: {active: !viewAll()}, click: showViewCurrent">
-                <a href="#" class="contributors">
-                    <img class="editor" width="30" height="30" data-bind="attr: { src: author_data.profile_image_url }" />
-                    <div class="name">
-                        by  @<span data-bind="text: author"></span>
-                        <span data-bind="if: contributors.length">with</span>
-                    </div>
-
-                    <span class="contrib" data-bind="foreach: contributors">
-                        <img width="30" height="30" data-bind="attr: { src: profile_image_url, title: screen_name }" />
-                    </span>
-                    &nbsp;
-                </a>
-            </li>
-            <li class="view-all" data-bind="css: {active: viewAll}, click: showViewAll"><a href="#">VIEW ALL SUMISSIONS</a></li>
-        </ul>
-
-        <article data-bind="template: { name: templateToUse, foreach: grafs }"></article>
-
-
-        <script id="header" type="text/html">
-            <div class="row">
-                <div class="col-xs-7">
-                    <h1 data-bind="text: title"></h1>
-                </div>
-                <div class="col-xs-5">
-                </div>
-            </div>
-        </script>
-
-        <script id="details" type="text/html">
-            <!-- ko if: approved -->
-                <!-- ko if: current -->
-                <div class="row reading">
-                    <div class="col-xs-7">
-                            <p class='article-body' data-bind="text: text"></p>
-
-                    </div>
-                    <div class="col-xs-5">
-                        <a class="context-info large-button" href='#' data-bind="click: $parent.selectedItem">Suggest an Edit</a>
-
-                        <!-- ko if: author() != $parent.author -->
-                        <div class="no-context-info contrib-credit">
-                            <img width="30" height="30" data-bind="attr: { src: author_data.profile_image_url }" />
-                            <div class="credit">Improved by @<span data-bind="text: author"></span></div>
-                        </div>
-                        <!-- /ko -->
-                    </div>
-                </div>
-                <!-- /ko -->
-            <!-- /ko -->
-        </script>
-
-         <script id="details-all" type="text/html">
-
-                <div class="row reading details-all">
-                    <div class="col-xs-7" data-bind="css: { approved: approved(), current: current()}">
-
-                        <!-- ko if: approved()-->
-                            <!-- ko ifnot: current() -->
-                            <img width="20" height="20" data-bind="attr: { src: author_data.profile_image_url }" />
-                             <p class="author">ACCEPTED EDIT by <span data-bind="text: author"></span></p>
-                            <!-- /ko -->
-                        <!-- /ko -->
-                        <!-- ko ifnot: approved()-->
-                            <img width="20" height="20" data-bind="attr: { src: author_data.profile_image_url }" />
-                            <p class="author">PENDING EDIT by <span data-bind="text: author"></span></p>
-                        <!-- /ko -->
-                        <p class='article-body' data-bind="text: text"></p>
-
-
-                    </div>
-                    <div class="col-xs-5">
-                        <!-- ko ifnot: approved()-->
-                            <!-- ko if: author() != $parent.user -->
-                                <!-- ko if: author() != $parent.author -->
-                                <a class="incorporate large-button" href='#' data-bind="click: $parent.approveItem">Incoporate Edit</a>
-                                <!-- /ko -->
-                            <!-- /ko -->
-                        <!-- /ko -->
-                    </div>
-                </div>
-
-        </script>
-
-        <script id="edit" type="text/html">
-
-            <div class="row editing">
-                <div class="col-xs-7">
-                    <span>
-                        <div class="article-body">
-                            <textarea type="text" data-bind="value: text"></textarea>
-
-                            <div class="bottom">
-                                <input type="checkbox" value="minorChange" data-bind="checked: $parent.minorChange" /> MINOR CHANGE
-                                <input class="source" type="text" data-bind="visible: !$parent.minorChange()" data-bind="value: source" placeholder="Link to the source of your information" />
-                            </div>
-                        </div>
-                    </span>
-                </div>
-                <div class="col-xs-5">
-                    <a href='#' class="large-button" data-bind="click: $parent.saveItem" type="submit">Submit</a>
-                </div>
-
-            </div>
-        </script>
-
+      <div class="navbar-right">
+        <p class="navbar-text" ng-show="logged_in">
+          <i class="icon-twitter-sign"></i> Ohai, <span ng-bind="current_user.name"></span>
+        </p>
+        <p class="navbar-text" ng-hide="logged_in">
+          <a href="/api/auth/twitter"><i class="icon-twitter-sign"></i> Sign in</a>
+        </p>
+      </div>
+      </div>
+    </div>
+    <div class="container" ng-view>
     </div><!-- /.container -->
 
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="vendor/jquery/jquery.js"></script>
-    <script src="vendor/jquery-ui/ui/jquery-ui.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="vendor/knockout/build/knockout-raw.js"></script>
-    <script src="vendor/knockout.mapping/knockout.mapping.js"></script>
-
-    <script type="text/javascript">
-
-
-        var viewModel = {};
-        viewModel.isSaving = ko.observable(false);
-        viewModel.selectedView = ko.observable("details");
-        viewModel.selectedItem = ko.observable();
-        viewModel.minorChange = ko.observable(true);
-        viewModel.source = ko.observable();
-        viewModel.viewAll = ko.observable(false);
-
-        viewModel.showViewAll = function(){
-            viewModel.viewAll(true);
-
-            viewModel.selectedView("details-all");
-        }
-        viewModel.showViewCurrent = function(){
-            viewModel.viewAll(false);
-            viewModel.selectedView("details");
-        }
-
-        viewModel.saveItem = function(form){
-            viewModel.isSaving(true);
-
-            console.log(this.selectedItem().text())
-            var graf = ko.toJS(this.selectedItem());
-            var grafJSON = ko.toJSON(this.selectedItem());
-            var dfd = $.ajax({
-                url: '/api/stories/' + graf.story + '/graf',
-                data: grafJSON,
-                type: 'POST',
-                dataType: 'json',
-                contentType: 'application/json',
-                success: function(data) {
-                    update(data);
-                },
-                failure: function(err) {
-                    console.log(err);
-                }
-            });
-        }.bind(viewModel);
-
-        viewModel.approveItem = function(item){
-            item.approved(true);
-
-            var graf = ko.toJS(item);
-
-            var grafJSON = ko.toJSON(item);
-            var dfd = $.ajax({
-                url: '/api/stories/' + graf.story + '/graf',
-                data: grafJSON,
-                type: 'POST',
-                dataType: 'json',
-                contentType: 'application/json',
-                success: function(data) {
-                    update(data);
-                },
-                failure: function(err) {
-                    console.log(err);
-                }
-            });
-        }.bind(viewModel);
-
-        viewModel.templateToUse = function(item) {
-            item.tmpEdit = item.text();
-
-            if (item === this.selectedItem() && viewModel.isSaving()) {
-                viewModel.isSaving(false);
-                return 'details';
-            }
-            return item === this.selectedItem() ? 'edit' : this.selectedView();
-        }.bind(viewModel);
-
-        function update(data) {
-            viewModel.author = data.author;
-            viewModel.author_data = data.author_data;
-
-            viewModel.grafs = ko.mapping.fromJS(data.grafs);
-
-            var contributors = [],
-                contributorNames = [];
-
-            $.each(data.grafs, function(i, g) {
-                if (g.approved && g.author_data && g.author != data.author && contributorNames.indexOf(g.author) == -1) {
-                    contributors.push(g.author_data);
-                    contributorNames.push(g.author);
-                }
-            });
-
-            viewModel.contributors = contributors;
-
-
-
-            viewModel.data = ko.mapping.fromJS(data);
-
-
-
-        }
-
-        // bind data to model
-        $.getJSON( "/api/stories/teachers-strike", function( data ) {
-            update(data);
-            ko.applyBindings(viewModel);
-        });
-
-        $.getJSON( "/api/status", function(data) {
-        var loggedIn = !!data.user;
-        if(loggedIn) {
-            viewModel.user = ko.observable(data.user.screen_name);
-        }
-        });
-
-
+    <script id="story-list.html" type="text/ng-template">
+      <ul ng-repeat="story in stories">
+        <li><a ng-bind="story.title" ng-href="#/story/{{story.slug}}"></a></li>
+      </ul>
     </script>
-    <script src="js/session.js"></script>
-    </body>
+
+    <script id="story.html" type="text/ng-template">
+      <div class="row">
+        <div class="col-xs-7">
+            <h1 ng-bind="story.title"></h1>
+        </div>
+        <div class="col-xs-5">
+        </div>
+      </div>
+
+      <ul class="nav nav-tabs">
+        <li ng-class="{active: !reviewMode}" ng-click="toggleReviewMode(false)">
+          <a class="contributors">
+            <img class="editor" width="30" height="30" ng-src="{{story.author_data.profile_image_url}}" />
+            <div class="name">
+              by  @<span ng-bind="story.author"></span>
+              <span ng-show="story.contributors.length > 0">with</span>
+            </div>
+
+            <span class="contrib" ng-repeat="contributor in story.contributors">
+              <img width="30" height="30" ng-src="{{contributor.profile_image_url}}" />
+            </span>
+            &nbsp;
+          </a>
+        </li>
+        <li ng-class="{active: reviewMode}" class="view-all" ng-click="toggleReviewMode(true)"><a>VIEW ALL SUMISSIONS</a></li>
+      </ul>
+
+      <div ng-repeat="graf in story.grafs" class="container">
+        <div ng-show="graf.editing" class="row" ng-class="{editing: true}">
+          <div class="col-xs-7" >
+            <span>
+              <div class="article-body">
+                <textarea type="text" ng-model="graf.text"></textarea>
+
+                <div class="bottom">
+                  <input type="checkbox" value="minorChange" ng-model="graf.minor" /> MINOR CHANGE
+                  <input class="source" type="text" ng-model="graf.source" ng-hide="graf.minor" placeholder="Link to the source of your information" />
+                </div>
+              </div>
+            </span>
+          </div>
+          <div class="col-xs-5">
+            <a class="large-button" ng-click="update(graf)">Submit</a>
+          </div>
+        </div>
+
+        <div ng-show="!graf.editing && ((reviewMode && !graf.approved) || graf.current)" class="row reading details-all">
+          <div class="col-xs-7" ng-class="{approved: graf.approved, current: graf.current, contributed: reviewMode && graf.contributed}">
+            <span ng-show="reviewMode && ((graf.current && graf.contributed) || !graf.approved)">
+              <img width="20" height="20" ng-src="{{graf.author_data.profile_image_url}}" />
+              <p ng-show="graf.approved" class="author">ACCEPTED EDIT by @<span ng-bind="graf.author"></span></p>
+              <p ng-show="!graf.approved" class="author">PENDING EDIT by @<span ng-bind="graf.author"></span></p>
+            </span>
+            <p class='article-body' ng-bind="graf.text"></p>
+          </div>
+          <div class="col-xs-5">
+            <a ng-show="reviewMode && isReviewer && !graf.approved"
+              class="incorporate large-button" ng-click="approve(graf)">Incoporate Edit</a>
+
+            <a ng-show="!reviewMode"
+              class="context-info large-button" ng-click="graf.editing=true">Suggest an Edit</a>
+
+            <div ng-show="!reviewMode && graf.contributed" class="no-context-info contrib-credit">
+                <img width="30" height="30" ng-src="{{graf.author_data.profile_image_url}}" />
+                <div class="credit">Improved by @<span ng-bind="graf.author"></span></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </script>
+
+  <script src="vendor/angular/angular.min.js"></script>
+  <script src="js/main.js"></script>
+  </body>
 </html>
