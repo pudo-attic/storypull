@@ -53,8 +53,8 @@ function getStory(req, slug, callback, errCallback) {
                 return errCallback({'status': 'Not found'});
             }
             story.uri = makeUri(req, '/api/stories/' + story.slug);
-            var options = {'sort': [['sequence', 1], ['current', -1], ['created_at', -1]]};
-            db.grafs.find({'story': story.slug}, options).toArray(function(err, results) {
+            var options = {'sort': [['sequence', 1], ['created_at', 1]]};
+            db.grafs.find({'story': story.slug, 'old': false}, options).toArray(function(err, results) {
                 if (err) {
                     return errCallback(err);
                 }
@@ -151,6 +151,7 @@ app.post('/api/import', function(req, res){
                     graf.story = story.slug;
                     graf.sequence = sequence + 1;
                     graf.key = makeUUID();
+                    graf.old = graf.old || false;
                     graf.created_at = story.created_at;
                     db.grafs.insert(graf, function(err, docs) {});
                 });
@@ -208,6 +209,7 @@ app.post('/api/stories/:slug/graf', function(req, res) {
         graf.author = (story.author == req.user.screen_name) ? graf.author : req.user.screen_name;
         graf.approved = (story.author == req.user.screen_name);
         graf.current = graf.approved;
+        graf.old = false;
         graf.created_at = new Date();
 
         if (!graf.key && !graf.sequence) {
@@ -226,12 +228,14 @@ app.post('/api/stories/:slug/graf', function(req, res) {
         db.stories.update({'slug': story.slug}, {'$set': {'last_change': graf.created_at}},
             {}, function(err, docs) {});
         var query = graf.approved ? {'$set': {'current': false, 'latest': false}} : {'$set': {'latest': false}};
-        db.grafs.update({'story': story.slug, 'key': graf.key}, query, {'multi': true}, function(err, docs) {
-            db.grafs.insert(graf, function(err, docs) {
-                getStory(req, story.slug, function(story) {
-                    res.jsonp(story);
-                }, function(err) {
-                    res.status(404).jsonp(err);
+        db.grafs.update({'story': story.slug, 'key': graf.key, 'current': true}, {'old': true}, {'multi': true}, function(err, docs) {
+            db.grafs.update({'story': story.slug, 'key': graf.key}, query, {'multi': true}, function(err, docs) {
+                db.grafs.insert(graf, function(err, docs) {
+                    getStory(req, story.slug, function(story) {
+                        res.jsonp(story);
+                    }, function(err) {
+                        res.status(404).jsonp(err);
+                    });
                 });
             });
         });
