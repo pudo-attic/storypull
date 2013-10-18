@@ -116,9 +116,16 @@
                         <!-- /ko -->
                         <p class='article-body' data-bind="text: text"></p>
 
+
                     </div>
                     <div class="col-xs-5">
-
+                        <!-- ko ifnot: approved()-->
+                            <!-- ko if: author() != $parent.user -->
+                                <!-- ko if: author() != $parent.author -->
+                                <a class="context-info large-button" href='#' data-bind="click: $parent.approveItem">Incoporate Edit</a>
+                                <!-- /ko -->
+                            <!-- /ko -->
+                        <!-- /ko -->
                     </div>
                 </div>
 
@@ -160,6 +167,8 @@
 
 
         var viewModel = {};
+        viewModel.isSaving = ko.observable(false);
+
         viewModel.selectedView = ko.observable("details");
         viewModel.selectedItem = ko.observable();
         viewModel.minorChange = ko.observable(true);
@@ -168,6 +177,7 @@
 
         viewModel.showViewAll = function(){
             viewModel.viewAll(true);
+
             viewModel.selectedView("details-all");
         }
         viewModel.showViewCurrent = function(){
@@ -178,7 +188,7 @@
         viewModel.saveItem = function(form){
             var graf = ko.toJS(this.selectedItem());
             var grafJSON = ko.toJSON(this.selectedItem());
-            //viewModel.templateToUse = 'details'
+
             console.log(grafJSON);
             //console.log(JSON.stringify(graf));
             var dfd = $.ajax({
@@ -188,7 +198,36 @@
                 dataType: 'json',
                 contentType: 'application/json',
                 success: function(data) {
-                    //console.log(data);
+
+                    console.log(viewModel.selectedView())
+                    console.log(viewModel.selectedItem());
+                    viewModel.selectedView('details');
+                    update(data);
+                },
+                failure: function(err) {
+                    console.log(err);
+                }
+            });
+        }.bind(viewModel);
+
+        viewModel.approveItem = function(form){
+            this.selecteItem.approved(true);
+// console.log(this.selectedItem.author())
+            var graf = ko.toJS(this.selectedItem());
+
+            var grafJSON = ko.toJSON(this.selectedItem());
+            console.log(grafJSON);
+            //console.log(JSON.stringify(graf));
+            var dfd = $.ajax({
+                url: '/api/stories/' + graf.story + '/graf',
+                data: grafJSON,
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function(data) {
+                    console.log(viewModel.selectedView())
+                    console.log(viewModel.selectedItem());
+                    viewModel.selectedView('details');
                     update(data);
                 },
                 failure: function(err) {
@@ -198,6 +237,12 @@
         }.bind(viewModel);
 
         viewModel.templateToUse = function(item) {
+            if (this.selectedView() == 'force-details') {
+                console.log('after save')
+                viewModel.selectedView('details');
+                return 'details'
+            }
+            console.log(this.selectedView())
             return item === this.selectedItem() ? 'edit' : this.selectedView();
         }.bind(viewModel);
 
@@ -221,12 +266,21 @@
 
             viewModel.data = ko.mapping.fromJS(data);
 
+            viewModel.selectedItem();
+
         }
 
         // bind data to model
         $.getJSON( "/api/stories/teachers-strike", function( data ) {
             update(data);
             ko.applyBindings(viewModel);
+        });
+
+        $.getJSON( "/api/status", function(data) {
+        var loggedIn = !!data.user;
+        if(loggedIn) {
+            viewModel.user = ko.observable(data.user.screen_name);
+        }
         });
 
 
