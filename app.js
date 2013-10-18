@@ -53,7 +53,7 @@ function getStory(req, slug, callback, errCallback) {
                 return errCallback({'status': 'Not found'});
             }
             story.uri = makeUri(req, '/api/stories/' + story.slug);
-            var options = {'sort': [['sequence', 1], ['created_at', 1]]};
+            var options = {'sort': [['sequence', 1], ['current', -1], ['created_at', -1]]};
             db.grafs.find({'story': story.slug}, options).toArray(function(err, results) {
                 if (err) {
                     return errCallback(err);
