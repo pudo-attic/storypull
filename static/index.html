@@ -78,6 +78,25 @@
             <!-- /ko -->
         </script>
 
+         <script id="details-all" type="text/html">
+            <!-- ko if: approved -->
+                <!-- ko if: current -->
+                <div class="row reading">
+                    <div class="col-xs-7">
+                        <p class='article-body' data-bind="text: text"></p>
+                    </div>
+                    <div class="col-xs-5">
+                        <a class="context-info large-button" href='#' data-bind="click: $parent.selectedItem">Suggest an Edit</a>
+
+                        <!-- ko if: author() != $parent.author -->
+                        <p class="no-context-info">Credits: <span data-bind="text: author"></span></p>
+                        <!-- /ko -->
+                    </div>
+                </div>
+                <!-- /ko -->
+            <!-- /ko -->
+        </script>
+
         <script id="edit" type="text/html">
 
             <div class="row editing">
@@ -85,9 +104,9 @@
                     <span>
                         <div class="article-body">
                             <textarea type="text" data-bind="value: text"></textarea>
-    
+
                             <div class="bottom">
-                                <input type="checkbox" value="minorChange" data-bind="checked: $parent.minorChange" /> MINOR CHANGE    
+                                <input type="checkbox" value="minorChange" data-bind="checked: $parent.minorChange" /> MINOR CHANGE
                                 <input class="source" type="text" data-bind="visible: !$parent.minorChange()" data-bind="value: source" placeholder="Link to the source of your information" />
                             </div>
                         </div>
@@ -118,11 +137,13 @@
         viewModel.selectedItem = ko.observable();
         viewModel.minorChange = ko.observable(true);
         viewModel.source = ko.observable();
+        viewModel.viewAll = ko.observable(true);
 
         viewModel.saveItem = function(form){
 
             ko.toJSON(this.selectedItem());
             // post this
+
             viewModel.templateToUse = 'details'
 
 
@@ -132,8 +153,7 @@
             return item === this.selectedItem() ? 'edit' : this.selectedView();
         }.bind(viewModel);
 
-        // bind data to model
-        $.getJSON( "/api/stories/teachers-strike", function( data ) {
+        function update(data) {
             viewModel.author = data.author;
 
             viewModel.grafs = ko.mapping.fromJS(data.grafs);
@@ -146,10 +166,15 @@
             // });
 
             viewModel.data = ko.mapping.fromJS(data);
-
             ko.applyBindings(viewModel);
+        }
 
+        // bind data to model
+        $.getJSON( "/api/stories/teachers-strike", function( data ) {
+            update(data);
         });
+
+
     </script>
     <script src="js/session.js"></script>
     </body>
