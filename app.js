@@ -37,6 +37,7 @@ function getProfiles(screen_names, callback) {
             results.forEach(function(p) {
                 profiles[p.screen_name] = p;
             });
+            console.log(profiles);
             callback(profiles);
         });
     });
@@ -67,7 +68,7 @@ function getStory(req, slug, callback, errCallback) {
                 getProfiles(screen_names, function(profiles) {
                     story.author_data = profiles[story.author];
                     story.grafs.forEach(function(g) {
-                        g.author_data = profiles[story.author];
+                        g.author_data = profiles[g.author];
                     });
                     return callback(story, db);
                 });
@@ -101,8 +102,8 @@ passport.use(new TwitterStrategy({
             if (user!==null) {
                 done(null, user);
             }
-            db.users.insert(profile._json, function(err, docs) {
-                done(null, docs);
+            db.users.insert(profile._json, function(err, user) {
+                done(null, user[0]);
             });
         });
     });
@@ -192,7 +193,10 @@ app.post('/api/stories/:slug/graf', function(req, res) {
         }
 
         graf.latest = true;
-        graf.author = req.user.screen_name;
+        if (!graf.author) {
+            graf.author = req.user.screen_name;
+        }
+        graf.author = (story.author === req.user.screen_name) ? graf.author : req.user.screen_name;
         graf.approved = (story.author === req.user.screen_name);
         graf.created_at = new Date();
 
