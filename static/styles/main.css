@@ -160,22 +160,26 @@ input.source {
 
 }
 
-.details-all .reading .col-xs-7{
+.details-all.reading .col-xs-7{
     background-color: #eee;
 }
 
-.details-all .reading .approved {
+.details-all.reading .approved {
     background-color: #d0f682 !important;
 }
 
-.details-all .reading .current {
+.details-all.reading .current {
     background-color: #fff !important;
 }
 
-.details-all .reading img, .reading .author {
+.details-all.reading img, .reading .author {
     float: left;
 }
 
-.details-all .reading .article-body {
+.details-all.reading .article-body {
     clear: both;
+}
+
+.view-all {
+    float: right !important;
 }

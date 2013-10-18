@@ -43,8 +43,11 @@
       </div>
    </div>
    <div class="container">
+          <ul class="nav nav-tabs">
+          <li class="active" data-bind="css: {active: !viewAll()}, click: showViewCurrent"><a href="#">Home</a></li>
+          <li class="view-all" data-bind="css: {active: viewAll}, click: showViewAll"><a href="#">VIEW ALL SUMISSIONS</a></li>
 
-        <a href="" data-bind="click: showViewAll()">view all</a>
+        </ul>
 
         <header data-bind="template: { name: 'header', data: data }"></header>
 
@@ -146,15 +149,15 @@
         viewModel.selectedItem = ko.observable();
         viewModel.minorChange = ko.observable(true);
         viewModel.source = ko.observable();
-        viewModel.viewAll = ko.observable(true);
+        viewModel.viewAll = ko.observable(false);
 
         viewModel.showViewAll = function(){
-            // viewModel.viewAll(true);
-            // viewModel.selectedView("details-all");
+            viewModel.viewAll(true);
+            viewModel.selectedView("details-all");
         }
         viewModel.showViewCurrent = function(){
-            // viewModel.viewAll(false);
-            // viewModel.selectedView("details");
+            viewModel.viewAll(false);
+            viewModel.selectedView("details");
         }
 
         viewModel.saveItem = function(form){
@@ -201,6 +204,7 @@
             viewModel.contributors = contributors;
 
             viewModel.data = ko.mapping.fromJS(data);
+
         }
 
         // bind data to model
