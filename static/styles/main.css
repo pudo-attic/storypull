@@ -1,23 +1,11 @@
 
-[contenteditable="true"] {
-
-    background-color: white;
-    background-color: -moz-field;
-    border: 1px solid darkgray;
-    font: -moz-field;
-    font: -webkit-small-control;
-    margin-top: 5px;
-    padding: 2px 3px;
-    width: 398px;
-}
-
 body {
     font-family: 'Lato';
     font-weight: 300;
 }
 
 h1, h2, h3, h4, h5 {
-    font-weight: 700;
+    font-weight: 300;
 }
 
 p {
@@ -51,8 +39,7 @@ p {
 }
 
 .row .context-info {
-   /* display: none;*/
-   display:block;
+    display: none;
 }
 
 .row .col-xs-7 {
@@ -81,18 +68,32 @@ p {
     display: none;
 }
 
-.row.reading:hover p.article-body, .editing span {
-    background-color: #eee;
-}
-
 .editing span {
     display: block;
     padding: 0.3em 0.7em;
     margin: 0 0 10px;
 }
+.row.reading:hover p.article-body, .editing .article-body {
+    background-color: #eee;
+}
+
+.row.reading {
+    min-height: 4em;
+}
 
 p.article-body {
     font-size: 1.2em;
+}
+
+.editing textarea {
+    width: 100%;
+    border: 1px solid #ddd;
+    margin: 0.3em 0 0.3em 0;
+    padding: 0.2em;
+
+    font-family: 'Lato';
+    font-weight: 300;
+    min-height: 4em;
 }
 
 .large-button {
