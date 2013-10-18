@@ -70,9 +70,10 @@ p {
 
 .editing span {
     display: block;
-    padding: 0.3em 0.7em;
-    margin: 0 0 10px;
+    p-adding: 0.3em 0.7em;
+    m-argin: 0 0 10px;
 }
+
 .row.reading:hover p.article-body, .editing .article-body {
     background-color: #eee;
 }
@@ -85,6 +86,10 @@ p.article-body {
     font-size: 1.2em;
 }
 
+.article-body .bottom {
+    min-height: 1.8em;
+}
+
 .editing textarea {
     width: 100%;
     border: 1px solid #ddd;
@@ -94,6 +99,15 @@ p.article-body {
     font-family: 'Lato';
     font-weight: 300;
     min-height: 4em;
+}
+
+.editing input[type="text"] {
+    border: 1px solid #ddd;
+    padding: 0.2em;
+
+    font-family: 'Lato';
+    font-weight: 300;
+    width: 50%;
 }
 
 .large-button {
