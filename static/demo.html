@@ -1,0 +1,56 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html lang="de" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html lang="de" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html lang="de" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="de" class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Storypull</title>
+        <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0">
+        <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap.min.css">
+        <link href="vendor/font-awesome/css/font-awesome.css" rel="stylesheet">
+        <link href='http://fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'>
+        <!-- build:css(.tmp) styles/main.css -->
+        <link rel="stylesheet" href="styles/main.css">
+        <!-- endbuild -->
+        <!-- build:js scripts/vendor/modernizr.js -->
+        <script src="vendor/modernizr/modernizr.js"></script>
+        <!-- endbuild -->
+        <script src="js/main.js"></script>
+        <link rel="shortcut icon" href="http://assets.pudo.org/img/opennews-favicon.ico" type="image/x-icon" />
+    </head>
+    <body>
+
+    <div class="navbar">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Storypull.</a>
+        </div>
+        <div class="navbar-right">
+            <p id="session-status" class="navbar-text">
+                <i class="icon-twitter-sign"></i> Ohai, <span id="current-user"></span>
+            </p>
+            <p id="sign-in" class="navbar-text">
+                <a href="/api/auth/twitter"><i class="icon-twitter-sign"></i> Sign in</a>
+            </p>
+        </div>
+      </div>
+   </div>
+   <div class="container">
+        <div class="jumbotron">
+            <div class="container">
+                <h1>Storypull.</h1>
+                <p>Improve local and specialized reporting, GitHub-style.</p>
+            <p><a href="/" class="btn btn-primary btn-lg">Demo</a></p>
+        </div>
+    </div>
+
+   <script src="vendor/jquery/jquery.js"></script>
+   <script src="js/session.js"></script>
+</html>

@@ -218,3 +218,15 @@ input.source {
     display: inline-block;
     float: left;
 }
+
+.jumbotron h1 {
+    text-transform: lowercase;
+    font-weight: 700;
+    color: rgb(250, 115, 0);
+    padding-left: 0.2em;
+}
+
+.jumbotron .btn.btn-primary.btn-lg {
+    background-color: #aaa;
+    border: #aaa;
+}
