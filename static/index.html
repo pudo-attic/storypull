@@ -186,11 +186,9 @@
         }
 
         viewModel.saveItem = function(form){
+            viewModel.isSaving(true);
             var graf = ko.toJS(this.selectedItem());
             var grafJSON = ko.toJSON(this.selectedItem());
-
-            console.log(grafJSON);
-            //console.log(JSON.stringify(graf));
             var dfd = $.ajax({
                 url: '/api/stories/' + graf.story + '/graf',
                 data: grafJSON,
@@ -198,10 +196,6 @@
                 dataType: 'json',
                 contentType: 'application/json',
                 success: function(data) {
-
-                    console.log(viewModel.selectedView())
-                    console.log(viewModel.selectedItem());
-                    viewModel.selectedView('details');
                     update(data);
                 },
                 failure: function(err) {
@@ -212,12 +206,10 @@
 
         viewModel.approveItem = function(form){
             this.selecteItem.approved(true);
-// console.log(this.selectedItem.author())
+            viewModel.isSaving(true);
             var graf = ko.toJS(this.selectedItem());
 
             var grafJSON = ko.toJSON(this.selectedItem());
-            console.log(grafJSON);
-            //console.log(JSON.stringify(graf));
             var dfd = $.ajax({
                 url: '/api/stories/' + graf.story + '/graf',
                 data: grafJSON,
@@ -225,9 +217,6 @@
                 dataType: 'json',
                 contentType: 'application/json',
                 success: function(data) {
-                    console.log(viewModel.selectedView())
-                    console.log(viewModel.selectedItem());
-                    viewModel.selectedView('details');
                     update(data);
                 },
                 failure: function(err) {
@@ -237,12 +226,10 @@
         }.bind(viewModel);
 
         viewModel.templateToUse = function(item) {
-            if (this.selectedView() == 'force-details') {
-                console.log('after save')
-                viewModel.selectedView('details');
-                return 'details'
+            if (item === this.selectedItem() && viewModel.isSaving()) {
+                viewModel.isSaving(false);
+                return 'details';
             }
-            console.log(this.selectedView())
             return item === this.selectedItem() ? 'edit' : this.selectedView();
         }.bind(viewModel);
 
@@ -264,9 +251,11 @@
 
             viewModel.contributors = contributors;
 
+
+
             viewModel.data = ko.mapping.fromJS(data);
 
-            viewModel.selectedItem();
+
 
         }
 
