@@ -182,7 +182,6 @@ app.get('/api/stories/:slug', function(req, res) {
 });
 
 app.post('/api/stories/:slug/graf', function(req, res) {
-    console.log(req);
     getStory(req, req.params.slug, function(story, db) {
         var graf = req.body;
 
@@ -206,8 +205,9 @@ app.post('/api/stories/:slug/graf', function(req, res) {
         if (!graf.author) {
             graf.author = req.user.screen_name;
         }
-        graf.author = (story.author === req.user.screen_name) ? graf.author : req.user.screen_name;
-        graf.approved = (story.author === req.user.screen_name);
+        graf.author = (story.author == req.user.screen_name) ? graf.author : req.user.screen_name;
+        graf.approved = (story.author == req.user.screen_name);
+        graf.current = graf.approved;
         graf.created_at = new Date();
 
         if (!graf.key && !graf.sequence) {
@@ -225,8 +225,8 @@ app.post('/api/stories/:slug/graf', function(req, res) {
 
         db.stories.update({'slug': story.slug}, {'$set': {'last_change': graf.created_at}},
             {}, function(err, docs) {});
-        var query = graf.approved ? {'$set': {'latest': false}} : {'$set': {'current': false, 'latest': false}};
-        db.grafs.update({'slug': story.slug, 'key': graf.key}, query, {}, function(err, docs) {
+        var query = graf.approved ? {'$set': {'current': false, 'latest': false}} : {'$set': {'latest': false}};
+        db.grafs.update({'story': story.slug, 'key': graf.key}, query, {'multi': true}, function(err, docs) {
             db.grafs.insert(graf, function(err, docs) {
                 getStory(req, story.slug, function(story) {
                     res.jsonp(story);
