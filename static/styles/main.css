@@ -68,6 +68,7 @@ p {
     display: none;
 }
 
+
 .editing span {
     display: block;
     p-adding: 0.3em 0.7em;
@@ -76,6 +77,10 @@ p {
 
 .row.reading:hover p.article-body, .editing .article-body {
     background-color: #eee;
+}
+
+.details-all.row.reading:hover p.article-body{
+    background-color: inherit;
 }
 
 .editing {
@@ -153,4 +158,24 @@ input.source {
     margin-bottom: 5px;
     width: 390px;
 
+}
+
+.details-all .reading .col-xs-7{
+    background-color: #eee;
+}
+
+.details-all .reading .approved {
+    background-color: #d0f682 !important;
+}
+
+.details-all .reading .current {
+    background-color: #fff !important;
+}
+
+.details-all .reading img, .reading .author {
+    float: left;
+}
+
+.details-all .reading .article-body {
+    clear: both;
 }

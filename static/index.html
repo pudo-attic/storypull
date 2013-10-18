@@ -43,10 +43,13 @@
       </div>
    </div>
    <div class="container">
+
+        <a href="" data-bind="click: showViewAll()">view all</a>
+
         <header data-bind="template: { name: 'header', data: data }"></header>
 
 
-            <article data-bind="template: { name: templateToUse, foreach: grafs }"></article>
+        <article data-bind="template: { name: templateToUse, foreach: grafs }"></article>
 
 
         <script id="header" type="text/html">
@@ -79,22 +82,28 @@
         </script>
 
          <script id="details-all" type="text/html">
-            <!-- ko if: approved -->
-                <!-- ko if: current -->
-                <div class="row reading">
-                    <div class="col-xs-7">
+
+                <div class="row reading details-all">
+                    <div class="col-xs-7" data-bind="css: { approved: approved(), current: current()}">
+
+                        <!-- ko if: approved()-->
+                            <!-- ko ifnot: current() -->
+                            <img width="20" height="20" src=""/>
+                             <p class="author">ACCEPTED EDIT by <span data-bind="text: author"></span></p>
+                            <!-- /ko -->
+                        <!-- /ko -->
+                        <!-- ko ifnot: approved()-->
+                            <img width="20" height="20" src=""/>
+                            <p class="author">PENDING EDIT by <span data-bind="text: author"></span></p>
+                        <!-- /ko -->
                         <p class='article-body' data-bind="text: text"></p>
+
                     </div>
                     <div class="col-xs-5">
-                        <a class="context-info large-button" href='#' data-bind="click: $parent.selectedItem">Suggest an Edit</a>
 
-                        <!-- ko if: author() != $parent.author -->
-                        <p class="no-context-info">Credits: <span data-bind="text: author"></span></p>
-                        <!-- /ko -->
                     </div>
                 </div>
-                <!-- /ko -->
-            <!-- /ko -->
+
         </script>
 
         <script id="edit" type="text/html">
@@ -138,6 +147,15 @@
         viewModel.minorChange = ko.observable(true);
         viewModel.source = ko.observable();
         viewModel.viewAll = ko.observable(true);
+
+        viewModel.showViewAll = function(){
+            // viewModel.viewAll(true);
+            // viewModel.selectedView("details-all");
+        }
+        viewModel.showViewCurrent = function(){
+            // viewModel.viewAll(false);
+            // viewModel.selectedView("details");
+        }
 
         viewModel.saveItem = function(form){
             var graf = ko.toJS(this.selectedItem());
