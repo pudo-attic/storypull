@@ -245,6 +245,37 @@ app.post('/api/stories/:slug/graf', function(req, res) {
     });
 });
 
+
+app.post('/api/stories/:slug/approve/:key/:id', function(req, res) {
+    getStory(req, req.params.slug, function(story, db) {
+        if (!story) {
+            res.status(404).jsonp({'status': 'No such story'});
+        }
+
+        if (!req.user || req.user.screen_name != story.author) {
+            res.status(401).jsonp({'status': 'Not logged in'});
+        }
+
+        db.stories.update({'slug': story.slug}, {'$set': {'last_change': new Date()}},
+            {}, function(err, docs) {});
+        //res.jsonp(story);
+        
+        db.grafs.update({'story': story.slug, 'key': req.params.key}, {'$set': {'current': false}},
+            {'multi': true}, function(err, docs) {
+            db.grafs.update({'_id': mongo.ObjectID(req.params.id)},
+                {'$set': {'current': true, 'approved': true}}, {}, function(err, docs) {
+                getStory(req, story.slug, function(story) {
+                    res.jsonp(story);
+                }, function(err) {
+                    res.status(404).jsonp(err);
+                });
+            });
+        });
+    }, function(err) {
+        res.status(404).jsonp(err);
+    });
+});
+
 var port = parseInt(process.env.PORT, 10) || 3000;
 app.listen(port);
 //console.log('Listening on port ' + port);

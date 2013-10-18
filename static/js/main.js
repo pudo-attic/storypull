@@ -69,8 +69,7 @@ function StoryCtrl($scope, $location, $routeParams, $http) {
     };
 
     $scope.approve = function(graf) {
-        graf.approved = true;
-        return $scope.update(graf);
+        $http.post('/api/stories/' + $scope.slug + '/approve/' + graf.key + '/' + graf._id, {}).success(handleUpdate);
     };
     
     $http.get('/api/stories/' + $scope.slug).success(handleUpdate);
